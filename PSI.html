@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+  <html>
+  <style>
+    table, th, td {
+      padding: 10px;
+        width: 60%;
+      border: 1px solid black;
+      border-collapse: collapse;
+      text-align: center;
+      height: 40px;
+      vertical-align: middle;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+  </style>
+
+  <head>
+    <title> Assignment 1 - PSI</title>
+    <!--This loads the jQuery library from a CDN-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!--This links a CSS file to the HTML-->
+    <link rel="stylesheet" href="mystyle.css">
+  </head>
+
+  <body style="text-align:center;" id="body">
+    <!--This adds a header and a div to display the PSI readings in the HTML body-->
+    <h1> Singapore's Pollution Standard Index (PSI) </h1>
+    <h2 id="datetimetext">Retrieval date</h2>
+    <div align="center" class="main" id="main"></div>
+  </body>
+
+  <!--This uses javascript to retrive the PSI readings from an API and display the data in a table. The data is retrieved using a Fetch API. The promised object is resolved using the '.then' method and passed into the myFunction function-->
+    <!--The myFunction function processes the data and creates a table to display the PSI readings.
+        The function first retrieves the readings from the data object, obtains the keys of the readings, and creates a table element in the HTML document.
+        It then defines an array of area names and adds a header row to the table with the area names.
+        The function then adds rows to the table for each type of PSI reading, with the reading type as the first cell in each row and the PSI readings for each area in subsequent cells.-->
+<script>
+  var today = new Date();
+  datetimetext.innerText = "Retrieval date: "+ today.toLocaleString();
+
+    var myData;
+  fetch('https://api.data.gov.sg/v1/environment/psi')
+    .then(response=>response.json())
+    .then(data=>myData=data)
+    .then(()=>this.myFunction(myData));
+
+  function myFunction(data) {
+    var readings=data.items[0].readings;
+    var keys=Object.keys(readings);
+    var table=document.createElement("table");
+    document.getElementById('main').appendChild(table)
+
+    const areas=['national','north','south','east','west','central']
+    rowhead=table.insertRow()
+    rowhead.insertCell().innerHTML=' '
+    for (let i=0; i<6; i++){
+      rowhead.insertCell().innerHTML='<b>'+areas[i]+'</b>';
+    }
+
+    for (let j=0; j<12; j++){
+      row=table.insertRow();
+      row.insertCell().innerHTML=keys[j];
+      for (let i=0; i<6; i++){
+        value=readings[keys[j]][areas[i]]
+        row.insertCell().innerHTML='<i>'+value+'</i>';
+      }
+    }
+
+    console.log(table)
+  }
+
+</script>
+
+</html>
