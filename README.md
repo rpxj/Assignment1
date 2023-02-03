@@ -1,2 +1,2 @@
-# Assignment1
+# Assignment 1
 Singapore's PSI
